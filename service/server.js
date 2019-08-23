@@ -11,181 +11,16 @@ const koaBody = require('koa-body');
 const cors = require('@koa/cors');
 
 const mongoose = require('mongoose');
-const validator = require('validator');
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+const UserModel = require('./models/user');
+
 mongoose
-  .connect('mongodb://localhost:27017/test', { useNewUrlParser: true })
+  .connect('mongodb://wasya1212:wasya1212@ds042677.mlab.com:42677/practic', { useNewUrlParser: true })
   .then(() => console.log("MongoDb connected..."))
   .catch(err => console.error(err));
 
-const UserSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    unique: true,
-    required: true,
-    trim: true,
-    validate: {
-      validator: validator.isEmail,
-      message: '{VALUE} is not a valid email!',
-      isAsync: false
-    }
-  },
-  password: {
-    type: String,
-    required: true,
-    validate: {
-      validator: function(v) {
-        return v.length >= 6;
-      },
-      message: '{VALUE} need length > 5 symbols!'
-    },
-  },
-  admin: {
-    type: Boolean,
-    required: true,
-    default: false
-  },
-  online: {
-    type: Boolean,
-    required: true,
-    default: false
-  },
-  info: {
-    phone: {
-      type: String,
-      required: true,
-      validate: {
-        validator: function(phone_number) {
-          return /^((\+|38|0)+([0-9]){9})$/m.test(phone_number);
-        },
-        message: '{VALUE} is not a valid phone number!'
-      }
-    },
-    name: {
-      type: String,
-      required: true
-    },
-    photo: {
-      type: String,
-      required: false
-    },
-    salary: {
-      type: Number,
-      required: true,
-      validate: {
-        validator: function(v) {
-          return v >= 0;
-        },
-        message: 'Salary cannot be < 0!'
-      }
-    },
-    post: {
-      type: String,
-      required: true
-    },
-    chats: [{
-      type: mongoose.Schema.Types.ObjectId
-    }],
-    status: {
-      weeks: [{
-        updated: Date,
-        working_hours: {
-          type: Number,
-          required: false,
-          validate: {
-            validator: function(v) {
-              return v >= 0;
-            },
-            message: 'Working hours cannot be < 0!'
-          }
-        },
-        vacation_hours: {
-          type: Number,
-          required: false,
-          validate: {
-            validator: function(v) {
-              return v >= 0;
-            },
-            message: 'Working hours cannot be < 0!'
-          }
-        },
-        truancy_hours: {
-          type: Number,
-          required: false,
-          validate: {
-            validator: function(v) {
-              return v >= 0;
-            },
-            message: 'Working hours cannot be < 0!'
-          }
-        },
-        holiday_hours: {
-          type: Number,
-          required: false,
-          validate: {
-            validator: function(v) {
-              return v >= 0;
-            },
-            message: 'Working hours cannot be < 0!'
-          }
-        }
-      }],
-      work_days: [{
-        type: Number,
-        validate: {
-          validator: function(v) {
-            return (v >= 1 && v <= 7 )
-          },
-          message: 'Day has been selected only between 1 and 7!'
-        }
-      }],
-      work_times: [{
-        start: {
-          type: String,
-          required: true,
-          validate: {
-            validator: function(time) {
-              return /^(?:[01]\d|2[0123]):(?:[012345]\d)$/m.test(time);
-            },
-            message: '{VALUE} is wrong time format!'
-          }
-        },
-        end: {
-          type: String,
-          required: true,
-          validate: {
-            validator: function(time) {
-              return /^(?:[01]\d|2[0123]):(?:[012345]\d)$/m.test(time);
-            },
-            message: '{VALUE} is wrong time format!'
-          }
-        }
-      }]
-    }
-  },
-}, { timestamps: true });
 
-UserSchema.pre('save', function (next) {
-    var user = this;
-    if (!user.isModified('password')) {return next()};
-    bcrypt.hash(user.password,10).then((hashedPassword) => {
-        user.password = hashedPassword;
-        next();
-    })
-}, function (err) {
-    next(err)
-})
-
-UserSchema.methods.comparePassword = function(candidatePassword, next) {
-  bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
-    if (err) return next(err);
-    next(null, isMatch)
-  });
-}
-
-const User = mongoose.model("User", UserSchema);
 
 // const createUser = newUser => {
 //   console.log(newUser)
@@ -211,53 +46,67 @@ const PORT = process.env.PORT || 5000;
 let activeUsers = {};
 
 router.all('/', async (ctx, next) => {
-  try {
-    const token = ctx.headers.authorization.split(" ")[1]
-    jwt.verify(token, key.tokenKey, function (err, payload) {
-      console.log(payload)
-      if (payload) {
-          user.findById(payload.userId).then(
-              (doc)=>{
-                  req.user = doc;
-                  next()
-              }
-          )
-      } else {
-         next()
-      }
-    })
-  } catch(e) {
-      next()
-  }
+  console.log(ctx.headers.authorization.split(" ")[0]);
+  ctx.redirect('/login');
+  next();
+  // try {
+  //   const token = ctx.headers.authorization.split(" ")[1]
+  //   console.log(token)
+  //   jwt.verify(token, key.tokenKey, function (err, payload) {
+  //     console.log(payload)
+  //     if (payload) {
+  //         UserModel.findById(payload.userId).then(
+  //             doc => {
+  //                 req.user = doc;
+  //                 next()
+  //             }
+  //         )
+  //     } else {
+  //        next()
+  //     }
+  //   })
+  // } catch(e) {
+  //     next()
+  // }
 });
 
 router.get('/', async (ctx, next) => {
   ctx.type = 'html';
-  ctx.body = fs.createReadStream(path.resolve(__dirname, 'public/index.html'));
+  // ctx.body = fs.createReadStream(path.resolve(__dirname, 'public/index.html'));
+  await next();
+});
+
+router.get('/login', async (ctx, next) => {
+  ctx.body = 'login';
   await next();
 });
 
 router.post('/login', async (ctx, next) => {
-  const user = await User.findOne({ email: ctx.request.body.email }, (err, user) => user);
+  console.log(ctx.request.body.email);
+  console.log(ctx.request.body.password);
+  const token = jwt.sign({ foo: 'bar' }, 'secret', { algorithm: 'HS512',  expiresIn: '1h' });
 
-  if (!user) {
-    ctx.throw(404, "User not found");
-  }
-
-  const isMatch = bcrypt.compareSync(ctx.request.body.password, user.password);
-
-  if (isMatch) {
-    ctx.body = user;
-  } else {
-    ctx.throw(403, "Wrong password!");
-  }
+  ctx.body = token;
+  // const user = await UserModel.findOne({ email: ctx.request.body.email }, (err, user) => user);
+  //
+  // if (!user) {
+  //   ctx.throw(404, "User not found");
+  // }
+  //
+  // const isMatch = bcrypt.compareSync(ctx.request.body.password, user.password);
+  //
+  // if (isMatch) {
+  //   ctx.body = user;
+  // } else {
+  //   ctx.throw(403, "Wrong password!");
+  // }
 
   await next();
 });
 
 router.post('/sign-up', async (ctx, next) => {
   console.log(ctx.request.body)
-  const user = new User({
+  const user = new UserModel({
     username: ctx.request.body.username,
     email: ctx.request.body.email,
     password: ctx.request.body.password
@@ -275,7 +124,7 @@ router.post('/sign-up', async (ctx, next) => {
 });
 
 router.post('/api/auth/signin', (ctx, next) => {
-  user.findOne({ email: ctx.request.body.email }).then(user => {
+  UserModel.findOne({ email: ctx.request.body.email }).then(user => {
     user.comparePassword(ctx.request.body.password, (err, isMatch) => {
       if(isMatch){
         var token = jwt.sign({ userId: user.id }, key.tokenKey);
