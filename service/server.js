@@ -81,45 +81,38 @@ router.get('/login', async (ctx, next) => {
   await next();
 });
 
-router.post('/login', async (ctx, next) => {
-  console.log(ctx.request.body.email);
-  console.log(ctx.request.body.password);
-  const token = jwt.sign({ foo: 'bar' }, 'secret', { algorithm: 'HS512',  expiresIn: '1h' });
+router.post('/api/auth/login', async (ctx, next) => {
+  const user = await UserModel.findOne({ email: ctx.request.body.email }, (err, user) => user);
 
-  ctx.body = token;
-  // const user = await UserModel.findOne({ email: ctx.request.body.email }, (err, user) => user);
-  //
-  // if (!user) {
-  //   ctx.throw(404, "User not found");
-  // }
-  //
-  // const isMatch = bcrypt.compareSync(ctx.request.body.password, user.password);
-  //
-  // if (isMatch) {
-  //   ctx.body = user;
-  // } else {
-  //   ctx.throw(403, "Wrong password!");
-  // }
+  if (!user) {
+    ctx.throw(404, "User not found");
+  }
+
+  const isMatch = bcrypt.compareSync(ctx.request.body.password, user.password);
+
+  if (isMatch) {
+    ctx.body = jwt.sign({ id: user._id }, 'secret', { algorithm: 'HS512',  expiresIn: '1h' });
+  } else {
+    ctx.throw(403, "Wrong password!");
+  }
 
   await next();
 });
 
-router.post('/sign-up', async (ctx, next) => {
-  console.log(ctx.request.body)
+router.post('/api/auth/sign-up', async (ctx, next) => {
   const user = new UserModel({
-    username: ctx.request.body.username,
+    ['info.name']: ctx.request.body.username,
     email: ctx.request.body.email,
     password: ctx.request.body.password
   });
 
-  // await createUser(user)
-  //   .then(newUser => {
-  //     console.log(newUser);
-  //     ctx.body = { user: newUser };
-  //   });
+  await user
+    .save()
+    .catch(err => {
+      ctx.throw(403, "Cannot create user or user is already created!");
+    });
 
-  user.save();
-
+  ctx.body = user;
   await next();
 });
 

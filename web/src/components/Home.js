@@ -1,9 +1,19 @@
-import React from 'react';
+import React, { Component } from 'react';
+// import axios from 'axios';
 
-const Home = () => (
-  <div>
-    <div>home</div>
-  </div>
-)
+class Home extends Component {
+  componentDidMount() {
+
+  }
+
+  render() {
+    return (
+      <div>
+        <div>home</div>
+      </div>
+    );
+  }
+}
+
 
 export default Home;

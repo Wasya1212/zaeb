@@ -37,7 +37,7 @@ const UserSchema = new mongoose.Schema({
   info: {
     phone: {
       type: String,
-      required: true,
+      required: false,
       validate: {
         validator: function(phone_number) {
           return /^((\+|38|0)+([0-9]){9})$/m.test(phone_number);
@@ -55,7 +55,7 @@ const UserSchema = new mongoose.Schema({
     },
     salary: {
       type: Number,
-      required: true,
+      required: false,
       validate: {
         validator: function(v) {
           return v >= 0;
@@ -65,7 +65,7 @@ const UserSchema = new mongoose.Schema({
     },
     post: {
       type: String,
-      required: true
+      required: false
     },
     chats: [{
       type: mongoose.Schema.Types.ObjectId
