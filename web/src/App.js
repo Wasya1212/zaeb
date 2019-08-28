@@ -1,5 +1,7 @@
-import React from 'react';
-// import logo from './logo.svg';
+import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
+import { connect } from "react-redux";
+import { addToken } from "./actions/index";
 import './App.css';
 import Home from './components/Home';
 
@@ -24,10 +26,62 @@ import Home from './components/Home';
 //   );
 // }
 
-function App() {
-  return (
-    <Home />
-  );
+function mapDispatchToProps(dispatch) {
+  return {
+    addToken: token => dispatch(addToken(token))
+  };
 }
+
+const mapStateToProps = state => {
+  return { token: state.token };
+};
+
+class AppComponent extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      redirect: false
+    };
+  }
+
+  setRedirect = () => {
+    this.setState({
+      redirect: true
+    })
+  }
+
+  renderRedirect = () => {
+    if (this.state.redirect) {
+      return <Redirect to='/login' />
+    }
+  }
+
+  componentDidMount() {
+    // this.props.addToken({ val: 'tokens', id: 'id' + Date.now() });
+    console.log(this.props)
+    if (this.props.token.val === '' || !this.props.token) {
+      this.setState({ redirect: true });
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        {this.renderRedirect()}
+        <span>{this.props.token.val}</span>
+        <Home />
+      </div>
+    );
+  }
+}
+
+const App = connect(mapStateToProps, mapDispatchToProps)(AppComponent);
+
+// function App() {
+//   return (
+//     <Home />
+//   );
+// }
 
 export default App;

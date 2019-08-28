@@ -32,7 +32,8 @@ class Signup extends Component {
         .post('/api/auth/sign-up', {
           username: this.state.username,
           email: this.state.email,
-          password: this.state.password
+          password: this.state.password,
+          token: "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpZCI6dIjVkNjJkNjM4NDc2Yzk2NDQ4YzAzOGUzZiIsImlhdCI6MTU2Njg0MjIxMiwiZXhwIjoxNTY2ODQ1ODEyfQ.WdWfAUYhezL0yCkfr8zKpwNDVS40A4RwISlqBqL4BRA3fHt2QU_oL_Qto-HSItjOqgTBPkXFLWEXdsN9Xapg5w"
         })
         .then(response => {
           console.log(response);

@@ -1,7 +1,21 @@
 import React, { Component } from 'react';
+import { connect } from "react-redux";
+
 import axios from 'axios';
 
-class Login extends Component {
+import { addToken } from "../actions/index";
+
+function mapDispatchToProps(dispatch) {
+  return {
+    addToken: token => dispatch(addToken(token))
+  };
+}
+
+const mapStateToProps = state => {
+  return { token: state.token };
+};
+
+class LoginForm extends Component {
   constructor(props) {
     super(props);
 
@@ -30,8 +44,8 @@ class Login extends Component {
           email: this.state.email,
           password: this.state.password
         })
-        .then(response => {
-          console.log(response);
+        .then(({ data: token }) => {
+          console.log(token);
         })
         .catch(err => {
           console.error(err);
@@ -70,5 +84,7 @@ class Login extends Component {
     )
   }
 }
+
+const Login = connect(mapStateToProps, mapDispatchToProps)(LoginForm);
 
 export default Login;

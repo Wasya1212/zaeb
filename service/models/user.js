@@ -160,12 +160,14 @@ UserSchema.pre('save', function (next) {
     next(err)
 })
 
-UserSchema.methods.comparePassword = function(candidatePassword, next) {
-  bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
-    if (err) return next(err);
-    next(null, isMatch)
-  });
-}
+// UserSchema.methods.comparePassword = function(candidatePassword, next) {
+//   bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
+//     if (err) return next(err);
+//     next(null, isMatch)
+//   });
+// }
+
+UserSchema.methods.comparePassword = bcrypt.compareSync;
 
 const User = mongoose.model("User", UserSchema);
 
