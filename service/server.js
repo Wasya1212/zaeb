@@ -38,8 +38,8 @@ app.use(koaBody({
    multipart: true,
    urlencoded: true
 }));
-app.use(userRouter.routes(), userRouter.allowedMethods());
 app.use(authRouter.routes(), authRouter.allowedMethods());
+app.use(userRouter.routes(), userRouter.allowedMethods());
 
 app.listen(PORT, () => {
   console.log(`Server work on port ${PORT}...`);

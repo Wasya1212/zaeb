@@ -25,8 +25,10 @@ const withAuth = async (ctx, next) => {
 
   try {
     const decoded = await verifyToken(token, SECRET);
-    ctx.userId = decoded.id;
+    ctx.state.isAuthenticated = true;
+    ctx.state.userId = decoded.id;
   } catch (e) {
+    ctx.state.isAuthenticated = false;
     ctx.throw(401, "Unauthorized: Invalid token!");
   } finally {
     await next();

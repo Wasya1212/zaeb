@@ -18,6 +18,9 @@ import Header from './components/Header';
 import store from "./store/index";
 import { addArticle, addToken } from "./actions/index";
 
+import SignInPage from './pages/SignIn.jsx';
+import ProfilePage from './pages/Profile.jsx';
+
 window.store = store;
 window.addArticle = addArticle;
 window.addToken = addToken;
@@ -37,9 +40,9 @@ ReactDOM.render(
       <Header />
 
       <Switch>
-        <Route path="/login" component={Login} />
+        <Route path="/sign-in" component={SignInPage} />
         <Route path="/sign-up" component={SignUp} />
-        <Route path="/" component={Home} />
+        <Route path="/profile" component={ProfilePage} />
       </Switch>
     </BrowserRouter>
   </Provider>,
