@@ -1,7 +1,23 @@
 import React, { Component } from 'react';
+import { connect } from "react-redux";
+
 import axios from 'axios';
 
-class Signup extends Component {
+import { addToken, addAuthentication, removeAuthentication } from "../actions/index";
+
+function mapDispatchToProps(dispatch) {
+  return {
+    addToken: token => dispatch(addToken(token)),
+    addAuthentication: () => dispatch(addAuthentication()),
+    removeAuthentication: () => dispatch(removeAuthentication())
+  };
+}
+
+const mapStateToProps = state => {
+  return { token: state.token };
+};
+
+class RegistrationForm extends Component {
   constructor(props) {
     super(props);
 
@@ -32,14 +48,24 @@ class Signup extends Component {
         .post('/api/auth/sign-up', {
           username: this.state.username,
           email: this.state.email,
-          password: this.state.password,
-          token: "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpZCI6dIjVkNjJkNjM4NDc2Yzk2NDQ4YzAzOGUzZiIsImlhdCI6MTU2Njg0MjIxMiwiZXhwIjoxNTY2ODQ1ODEyfQ.WdWfAUYhezL0yCkfr8zKpwNDVS40A4RwISlqBqL4BRA3fHt2QU_oL_Qto-HSItjOqgTBPkXFLWEXdsN9Xapg5w"
+          password: this.state.password
         })
-        .then(response => {
-          console.log(response);
+        .then(({ data: token }) => {
+          localStorage.setItem('token', token);
+          this.props.addToken(token);
+          this.props.addAuthentication();
+        })
+        .then(() => {
+          try {
+            this.props.success();
+          } catch (err) {
+            console.error(err);
+          }
         })
         .catch(err => {
-          console.error(err.message);
+          localStorage.clear();
+          this.props.removeAuthentication();
+          console.error(err);
         });
     } else {
       alert('incorrect data');
@@ -49,45 +75,49 @@ class Signup extends Component {
   render() {
     return (
       <div>
-        <div>sign up</div>
         <form onSubmit={this.handleSubmit}>
           <input
             name="username"
             type="text"
             placeholder="full name"
             onChange={this.handleChange}
+            required="required"
           />
           <input
             name="email"
             type="email"
             placeholder="email"
             onChange={this.handleChange}
+            required="required"
           />
           <input
             name="reEmail"
             type="email"
             placeholder="retype email"
             onChange={this.handleChange}
+            required="required"
           />
           <input
             name="password"
             type="password"
             placeholder="password"
             onChange={this.handleChange}
+            required="required"
           />
           <input
             name="rePassword"
             type="password"
             placeholder="retype password"
             onChange={this.handleChange}
+            required="required"
           />
-          <button
-            type="submit"
-          >sign up</button>
+          <button type="submit">sign up</button>
         </form>
       </div>
     );
   }
 }
 
-export default Signup;
+const Registration = connect(mapStateToProps, mapDispatchToProps)(RegistrationForm);
+
+export default Registration;

@@ -18,8 +18,9 @@ router.post('/api/auth/sign-up', async ctx => {
       ctx.throw(403, "Cannot create user or user is already created!");
     });
 
-  ctx.body = user;
-  await next();
+  const token = jwt.sign({ id: user._id }, 'secret', { algorithm: 'HS512',  expiresIn: '1h' });
+
+  ctx.body = token;
 });
 
 router.post('/api/auth/sign-in', async ctx => {

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 import axios from 'axios';
 
-import { addAuthentication } from "../actions/index";
+import { removeAuthentication } from "../actions/index";
 
 const mapStateToProps = state => {
   return { isAuthenticated: state.isAuthenticated };
@@ -12,7 +12,7 @@ const mapStateToProps = state => {
 
 function mapDispatchToProps(dispatch) {
   return {
-    addAuthentication: val => dispatch(addAuthentication(val))
+    removeAuthentication: () => dispatch(removeAuthentication())
   };
 }
 
@@ -21,6 +21,7 @@ const Navigation = () => (
     <li><Link to="sign-in">login</Link></li>
     <li><Link to="sign-up">sign up</Link></li>
     <li><Link to="profile">home</Link></li>
+    <li><Link to="chat">chat</Link></li>
   </nav>
 );
 
@@ -35,9 +36,9 @@ class HeaderComponent extends Component {
 
   logout = () => {
     axios
-      .post('/api/auth/logout')
+      .post('/api/auth/logout', { token: localStorage.getItem('token') })
       .then(() => {
-        this.props.addAuthentication(false);
+        this.props.removeAuthentication();
         localStorage.removeItem('token');
         window.location.reload();
       })
@@ -50,7 +51,7 @@ class HeaderComponent extends Component {
     return (
       <header>
         <Navigation />
-        {this.props.isAuthenticated ? <LogoutBtn onClick={this.logout} /> : null}
+        {this.props.isAuthenticated ? <LogoutBtn onClick={this.logout} /> : this.props.isAuthenticated.toString()}
       </header>
     );
   }

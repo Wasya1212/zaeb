@@ -9,17 +9,15 @@ import * as serviceWorker from './serviceWorker';
 
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
-import Login from './components/Login';
-import Home from './App';
-import SignUp from './components/SignUp'
-
-import Header from './components/Header';
-
 import store from "./store/index";
 import { addArticle, addToken } from "./actions/index";
 
+import Header from './components/Header.jsx';
+
 import SignInPage from './pages/SignIn.jsx';
+import SignUpPage from './pages/SignUp.jsx';
 import ProfilePage from './pages/Profile.jsx';
+import ChatPage from './pages/Chat.jsx';
 
 window.store = store;
 window.addArticle = addArticle;
@@ -41,8 +39,9 @@ ReactDOM.render(
 
       <Switch>
         <Route path="/sign-in" component={SignInPage} />
-        <Route path="/sign-up" component={SignUp} />
+        <Route path="/sign-up" component={SignUpPage} />
         <Route path="/profile" component={ProfilePage} />
+        <Route path="/chat" component={ChatPage} />
       </Switch>
     </BrowserRouter>
   </Provider>,

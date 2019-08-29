@@ -3,11 +3,13 @@ import { connect } from "react-redux";
 
 import axios from 'axios';
 
-import { addToken } from "../actions/index";
+import { addToken, addAuthentication, removeAuthentication } from "../actions/index";
 
 function mapDispatchToProps(dispatch) {
   return {
-    addToken: token => dispatch(addToken(token))
+    addToken: token => dispatch(addToken(token)),
+    addAuthentication: () => dispatch(addAuthentication()),
+    removeAuthentication: () => dispatch(removeAuthentication())
   };
 }
 
@@ -47,9 +49,18 @@ class LoginForm extends Component {
         .then(({ data: token }) => {
           localStorage.setItem('token', token);
           this.props.addToken(token);
+          this.props.addAuthentication();
+        })
+        .then(() => {
+          try {
+            this.props.success();
+          } catch (err) {
+            console.error(err);
+          }
         })
         .catch(err => {
           localStorage.clear();
+          this.props.removeAuthentication();
           console.error(err);
         });
     } else {
@@ -60,7 +71,6 @@ class LoginForm extends Component {
   render() {
     return (
       <div>
-        <div>login</div>
         <form onSubmit={this.handleSubmit}>
           <input
             className="email"

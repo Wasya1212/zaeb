@@ -1,4 +1,9 @@
-import { ADD_ARTICLE, ADD_TOKEN, ADD_AUTHENTICATION } from "../constants/action-types";
+import {
+  ADD_ARTICLE,
+  ADD_TOKEN,
+  ADD_AUTHENTICATION,
+  REMOVE_AUTHENTICATION
+} from "../constants/action-types";
 
 const initialState = {
   articles: [],
@@ -20,8 +25,16 @@ function rootReducer(state = initialState, action) {
   }
 
   if (action.type === ADD_AUTHENTICATION) {
+    console.log('add auth')
     return Object.assign({}, state, {
-      isAuthenticated: action.payload
+      isAuthenticated: true
+    });
+  }
+
+  if (action.type === REMOVE_AUTHENTICATION) {
+    console.log('remove auth')
+    return Object.assign({}, state, {
+      isAuthenticated: false
     });
   }
 

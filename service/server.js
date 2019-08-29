@@ -13,7 +13,11 @@ const cors = require('@koa/cors');
 const mongoose = require('./middleware/mongoose');
 const errorhandler = require('./middleware/errorHandler');
 
-const { userRouter, authRouter } = require('./routes/index');
+const {
+  userRouter,
+  authRouter,
+  chatRouter
+} = require('./routes/index');
 
 const app = new Koa();
 
@@ -38,8 +42,10 @@ app.use(koaBody({
    multipart: true,
    urlencoded: true
 }));
+
 app.use(authRouter.routes(), authRouter.allowedMethods());
 app.use(userRouter.routes(), userRouter.allowedMethods());
+app.use(chatRouter.routes(), chatRouter.allowedMethods());
 
 app.listen(PORT, () => {
   console.log(`Server work on port ${PORT}...`);

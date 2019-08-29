@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { Redirect } from 'react-router-dom';
 
-import { addAuthentication } from "../actions/index";
+import { addAuthentication, removeAuthentication } from "../actions/index";
 
 import axios from 'axios';
 
 function mapDispatchToProps(dispatch) {
   return {
-    addAuthentication: val => dispatch(addAuthentication(val))
+    addAuthentication: () => dispatch(addAuthentication()),
+    removeAuthentication: () => dispatch(removeAuthentication())
   };
 }
 
@@ -24,26 +25,38 @@ class AuthComponent extends Component {
   componentDidMount() {
     const token = localStorage.getItem('token') || '';
 
-    axios
-      .post('/api/auth/authorization', {token})
-      .then(() => {
-        if (this.props.successRedirect) {
-          this.setState({
-            redirect: <Redirect to={this.props.successRedirect} />
-          });
-          this.props.addAuthentication(true);
-        }
-      })
-      .catch(err => {
-        if (this.props.failureRedirect) {
-          this.setState({
-            redirect: <Redirect to={this.props.failureRedirect} />
-          });
-          this.props.addAuthentication(false);
-        }
+    if (!token || token === '') {
+      console.error('No auth data is found!');
 
-        console.error('Failure authentication!');
-      });
+      if (this.props.failureRedirect) {
+        this.setState({
+          redirect: <Redirect to={this.props.failureRedirect} />
+        });
+      }
+    } else {
+      axios
+        .post('/api/auth/authorization', {token})
+        .then(() => {
+          if (this.props.successRedirect) {
+            this.setState({
+              redirect: <Redirect to={this.props.successRedirect} />
+            });
+          }
+
+          this.props.addAuthentication();
+        })
+        .catch(err => {
+          if (this.props.failureRedirect) {
+            this.setState({
+              redirect: <Redirect to={this.props.failureRedirect} />
+            });
+          }
+
+          this.props.removeAuthentication();
+
+          console.error('Failure authentication!');
+        });
+    }
   }
 
   render() {

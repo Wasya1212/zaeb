@@ -6,6 +6,8 @@ const withAuth = require('../middleware/authorization');
 const UserModel = require('../models/user');
 
 const authRouter = require('./api/auth');
+const chatRouter = require('./api/chat');
+
 const userRouter = new Router();
 
 const getPage = page => {
@@ -34,7 +36,10 @@ userRouter.all('/*', withAuth, async (ctx, next) => {
   if (ctx.state.isAuthenticated) {
     try {
       ctx.state.user = await UserModel.findById(ctx.state.userId);
-      ctx.body = 200;
+
+      if (ctx.request.url == '/api/auth/authorization' || ctx.request.url == '/api/auth/sign-in' || ctx.request.url == '/api/auth/sign-up') {
+        ctx.body = 200;
+      }
     } catch (e) {
       ctx.throw(404, "Cannot find user!");
     } finally {
@@ -52,4 +57,4 @@ userRouter.get('/', async (ctx, next) => {
   await next();
 });
 
-module.exports = { userRouter, authRouter };
+module.exports = { userRouter, authRouter, chatRouter };
