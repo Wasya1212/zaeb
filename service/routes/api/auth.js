@@ -8,7 +8,7 @@ const router = new Router();
 router.post('/api/auth/sign-up', async ctx => {
   const user = new UserModel({
     ['info.name']: ctx.request.body.username,
-    email: ctx.request.body.email,
+    email: ctx.request.body.email.trim(),
     password: ctx.request.body.password
   });
 

@@ -7,7 +7,7 @@ import axios from 'axios';
 
 import { removeAuthentication } from "../actions/index";
 
-import UsersList from "./UsersList.jsx";
+import { SearchUsersButton } from "./Users.jsx";
 
 Modal.setAppElement('#root');
 
@@ -34,56 +34,7 @@ const LogoutBtn = props => (
   <span {...props}>{props.children || 'logout'}</span>
 );
 
-class SearchUsersButton extends Component {
-  constructor(props) {
-    super(props);
 
-    this.state = {
-      findUsersModalIsOpen: false,
-      users: []
-    };
-  }
-
-  closeFindUsersModal = () => {
-    this.setState({
-      findUsersModalIsOpen: false
-    });
-  }
-
-  showSearchMenu = () => {
-    this.setState({
-      findUsersModalIsOpen: true
-    });
-  }
-
-  findUsers = () => {
-    axios
-      .post('api/users', { token: localStorage.getItem('token') })
-      .then(resolve => {
-        console.log(resolve);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  }
-
-  render() {
-    return (
-      <div>
-        <button onClick={this.showSearchMenu}>search users</button>
-        <Modal
-          isOpen={this.state.findUsersModalIsOpen}
-          onRequestClose={this.closeFindUsersModal}
-          contentLabel="Find users"
-        >
-          <UsersList users={this.state.users} />
-          <button onClick={this.findUsers}>find users</button>
-          <button onClick={this.closeFindUsersModal}>Close modal</button>
-        </Modal>
-      </div>
-    );
-  }
-}
 
 class HeaderComponent extends Component {
   constructor(props) {

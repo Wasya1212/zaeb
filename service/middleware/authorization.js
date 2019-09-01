@@ -18,6 +18,7 @@ const withAuth = async (ctx, next) => {
   let token;
 
   try {
+    console.log(ctx.request.body)
     token = ctx.request.body.token || ctx.request.query.token || ctx.headers.authorization.split("")[0];
   } catch (e) {
     ctx.throw(401, "Unauthorized: No token provided!");
