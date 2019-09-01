@@ -14,6 +14,7 @@ const mongoose = require('./middleware/mongoose');
 const errorhandler = require('./middleware/errorHandler');
 
 const {
+  router,
   userRouter,
   authRouter,
   chatRouter
@@ -44,8 +45,9 @@ app.use(koaBody({
 }));
 
 app.use(authRouter.routes(), authRouter.allowedMethods());
-app.use(userRouter.routes(), userRouter.allowedMethods());
+app.use(router.routes(), router.allowedMethods());
 app.use(chatRouter.routes(), chatRouter.allowedMethods());
+app.use(userRouter.routes(), userRouter.allowedMethods());
 
 app.listen(PORT, () => {
   console.log(`Server work on port ${PORT}...`);

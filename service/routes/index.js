@@ -7,8 +7,9 @@ const UserModel = require('../models/user');
 
 const authRouter = require('./api/auth');
 const chatRouter = require('./api/chat');
+const userRouter = require('./api/user');
 
-const userRouter = new Router();
+const router = new Router();
 
 const getPage = page => {
   try {
@@ -18,21 +19,21 @@ const getPage = page => {
   }
 }
 
-userRouter.get('/login', async (ctx, next) => {
+router.get('/login', async (ctx, next) => {
   ctx.type = 'html';
   ctx.body = getPage('index');
 
   await next();
 });
 
-userRouter.get('/sign-up', async (ctx, next) => {
+router.get('/sign-up', async (ctx, next) => {
   ctx.type = 'html';
   ctx.body = getPage('index');
 
   await next();
 });
 
-userRouter.all('/*', withAuth, async (ctx, next) => {
+router.all('/*', withAuth, async (ctx, next) => {
   if (ctx.state.isAuthenticated) {
     try {
       ctx.state.user = await UserModel.findById(ctx.state.userId);
@@ -50,11 +51,11 @@ userRouter.all('/*', withAuth, async (ctx, next) => {
   }
 });
 
-userRouter.get('/', async (ctx, next) => {
+router.get('/', async (ctx, next) => {
   ctx.type = 'html';
   ctx.body = getPage('index');
 
   await next();
 });
 
-module.exports = { userRouter, authRouter, chatRouter };
+module.exports = { router, authRouter, chatRouter, userRouter };
