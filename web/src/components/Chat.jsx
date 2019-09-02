@@ -69,4 +69,12 @@ class CreateChatComponent extends Component {
   }
 }
 
-export { CreateChatComponent, ChatList };
+const MessageList = ({messages}) => (
+  <ul>
+    {
+      messages.map(message => <li>{message.text}</li>)
+    }
+  </ul>
+);
+
+export { CreateChatComponent, ChatList, MessageList };

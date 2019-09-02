@@ -23,10 +23,10 @@ function mapDispatchToProps(dispatch) {
 
 const Navigation = () => (
   <nav>
-    <li><Link to="sign-in">login</Link></li>
-    <li><Link to="sign-up">sign up</Link></li>
-    <li><Link to="profile">home</Link></li>
-    <li><Link to="chat">chat</Link></li>
+    <li><Link to="/sign-in">login</Link></li>
+    <li><Link to="/sign-up">sign up</Link></li>
+    <li><Link to="/profile">home</Link></li>
+    <li><Link to="/chat">chat</Link></li>
   </nav>
 );
 

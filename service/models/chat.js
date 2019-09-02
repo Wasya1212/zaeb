@@ -24,8 +24,6 @@ const ChatSchema = new mongoose.Schema({
   }]
 }, { timestamps: true });
 
-ChatSchema.methods.comparePassword = bcrypt.compareSync;
-
 const Chat = mongoose.model("Chat", ChatSchema);
 
 module.exports = Chat;

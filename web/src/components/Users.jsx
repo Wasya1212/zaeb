@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Modal from 'react-modal';
+import { Link } from 'react-router-dom';
 
 import axios from 'axios';
 
@@ -42,7 +43,13 @@ class UsersList extends Component {
           onRequestClose={this.closeUserModal}
           contentLabel="Find users"
         >
-          {this.state.userModalIsOpen ? <UserProfile user={this.state.user} /> : null}
+          {
+            this.state.userModalIsOpen ? (
+              <div>
+                <UserProfile user={this.state.user} />
+                <Link to={"/chat/" + this.state.user._id.toString()} onClick={this.closeUserModal}>Go to messaging</Link>
+              </div>
+            ) : null}
           <button onClick={this.closeUserModal}>Close modal</button>
         </Modal>
       </ul>
@@ -69,7 +76,7 @@ class SearchUsersButton extends Component {
 
   findUsers = name => {
     axios
-      .post('api/users', { name: name, token: localStorage.getItem('token') })
+      .post('/api/users', { name: name, token: localStorage.getItem('token') })
       .then(({ data: users }) => {
         this.setState({ users });
       })

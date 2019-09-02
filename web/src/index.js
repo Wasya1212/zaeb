@@ -18,6 +18,7 @@ import SignInPage from './pages/SignIn.jsx';
 import SignUpPage from './pages/SignUp.jsx';
 import ProfilePage from './pages/Profile.jsx';
 import ChatPage from './pages/Chat.jsx';
+import MessagePage from './pages/Message.jsx';
 
 window.store = store;
 window.addArticle = addArticle;
@@ -41,7 +42,8 @@ ReactDOM.render(
         <Route path="/sign-in" component={SignInPage} />
         <Route path="/sign-up" component={SignUpPage} />
         <Route path="/profile" component={ProfilePage} />
-        <Route path="/chat" component={ChatPage} />
+        <Route exact path="/chat" component={ChatPage} />
+        <Route path="/chat/:chatId" component={MessagePage}/>
       </Switch>
     </BrowserRouter>
   </Provider>,
