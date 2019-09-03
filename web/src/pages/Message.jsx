@@ -10,12 +10,17 @@ class Message extends Component {
 
     this.state = {
       messages: [],
-      sendingMessage: ''
+      sendingMessage: '',
+      interlocutorId: null
     };
   }
 
   componentDidMount() {
     const {chatId} = this.props.match.params;
+
+    this.setState({
+      interlocutorId: chatId
+    });
 
     axios
       .post('/api/chat/conversation', {token: localStorage.getItem('token'), interlocutorId: chatId})
@@ -32,9 +37,8 @@ class Message extends Component {
   sendMessage = e => {
     e.preventDefault();
 
-    alert(this.state.sendingMessage);
     axios
-      .post('/api/chat/message', {token: localStorage.getItem('token'), message: this.state.sendingMessage})
+      .post('/api/chat/message', {token: localStorage.getItem('token'), message: this.state.sendingMessage, interlocutorId: this.state.interlocutorId})
       .then(resolve => {
         console.log(resolve);
       })

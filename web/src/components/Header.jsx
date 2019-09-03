@@ -8,6 +8,9 @@ import axios from 'axios';
 import { removeAuthentication } from "../actions/index";
 
 import { SearchUsersButton } from "./Users.jsx";
+import { LogoutBtn } from "./Auth.jsx";
+
+import "../styles/header.sass";
 
 Modal.setAppElement('#root');
 
@@ -15,58 +18,37 @@ const mapStateToProps = state => {
   return { isAuthenticated: state.isAuthenticated };
 };
 
-function mapDispatchToProps(dispatch) {
-  return {
-    removeAuthentication: () => dispatch(removeAuthentication())
-  };
-}
-
-const Navigation = () => (
-  <nav>
-    <li><Link to="/sign-in">login</Link></li>
-    <li><Link to="/sign-up">sign up</Link></li>
-    <li><Link to="/profile">home</Link></li>
-    <li><Link to="/chat">chat</Link></li>
-  </nav>
+const Navigation = ({isAuthenticated}) => (
+  <div>
+    {
+      isAuthenticated == false ? (
+        <nav className="navigation">
+          <li className="navigation__item"><Link to="/sign-in">login</Link></li>
+          <li className="navigation__item"><Link to="/sign-up">sign up</Link></li>
+        </nav>
+      ) : (
+        <nav className="navigation">
+          <li className="navigation__item"><Link to="/profile">home</Link></li>
+          <li className="navigation__item"><Link to="/chat">chat</Link></li>
+          <li className="navigation__item"><LogoutBtn /></li>
+        </nav>
+      )
+    }
+  </div>
 );
 
-const LogoutBtn = props => (
-  <span {...props}>{props.children || 'logout'}</span>
+const Logo = () => (
+  <Link className="logo" to="/profile"><img src="https://www.okko.ua/adaptive/img/header/big-logo.svg" alt="logo" /></Link>
 );
 
+const HeaderComponent = ({isAuthenticated}) => (
+  <header className="header">
+    <Logo />
+    {isAuthenticated ? <SearchUsersButton /> : null}
+    <Navigation isAuthenticated={isAuthenticated}/>
+  </header>
+);
 
-
-class HeaderComponent extends Component {
-  constructor(props) {
-    super(props);
-
-
-  }
-
-  logout = () => {
-    axios
-      .post('/api/auth/logout', { token: localStorage.getItem('token') })
-      .then(() => {
-        this.props.removeAuthentication();
-        localStorage.removeItem('token');
-        window.location.reload();
-      })
-      .catch(err => {
-        console.error(err);
-      })
-  }
-
-  render() {
-    return (
-      <header>
-        <Navigation />
-        <SearchUsersButton />
-        {this.props.isAuthenticated ? <LogoutBtn onClick={this.logout} /> : this.props.isAuthenticated.toString()}
-      </header>
-    );
-  }
-};
-
-const Header = connect(mapStateToProps, mapDispatchToProps)(HeaderComponent);
+const Header = connect(mapStateToProps)(HeaderComponent);
 
 export default Header;

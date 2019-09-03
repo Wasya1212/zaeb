@@ -1,6 +1,30 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 import axios from 'axios';
+
+import "../styles/chat.sass";
+
+function getTime(timestamp) {
+  const date = timestamp.toString().slice(0,10);
+  let time = timestamp.toString().slice(11,16);
+
+  return `${date} ${time}`;
+}
+
+const ChatView = ({chat}) => (
+  <div className="chat-view">
+    <div className="chat-view__poster">
+      <img src="https://ik.imagekit.io/PrintOctopus/s/files/1/0006/0158/7777/products/dab_life.png?v=1554963498" />
+    </div>
+    <div className="chat-view__info">
+      <div className="chat-view__title">{chat.name}</div>
+      <div className="chat-view__users-count">users: {chat.users.length - 1}</div>
+      <div className="chat-view__messages-count">messages: {chat.messages.length}</div>
+      <div className="chat-view__latest-update">{getTime(chat.updatedAt)}</div>
+    </div>
+  </div>
+);
 
 const ChatList = props => {
   if (!Array.isArray(props.chats)) {
@@ -8,9 +32,24 @@ const ChatList = props => {
   }
 
   return (
-    <ul>
-      {props.chats.map(chat => (<li>{chat.name}</li>))}
-    </ul>
+    <div className="chats">
+      <ul className="chat-list">
+        <h3>Users chats:</h3>
+        {
+          props.chats
+            .filter(chat => chat.name === 'conversation')
+            .map(chat => <li className="chat-list__item"><Link to={"/chat/" + chat._id.toString()}><ChatView chat={chat} /></Link></li>)
+        }
+      </ul>
+      <ul className="chat-list">
+        <h3>Group chats:</h3>
+        {
+          props.chats
+            .filter(chat => chat.name !== 'conversation')
+            .map(chat => <li className="chat-list__item"><Link to={"/chat/" + chat._id.toString()}><ChatView chat={chat} /></Link></li>)
+        }
+      </ul>
+    </div>
   );
 };
 

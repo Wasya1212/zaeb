@@ -70,31 +70,29 @@ class LoginForm extends Component {
 
   render() {
     return (
-      <div>
-        <form onSubmit={this.handleSubmit}>
-          <input
-            className="email"
-            value={this.state.email}
-            type="email"
-            onChange={this.handleChange}
-            name="email"
-            placeholder="email"
-            required
-          />
-          <input
-            className="password"
-            value={this.state.password}
-            type="password"
-            onChange={this.handleChange}
-            name="password"
-            placeholder="password"
-            required
-          />
-          <button
-            type="submit"
-          >login</button>
-        </form>
-      </div>
+      <form className="login-form" onSubmit={this.handleSubmit}>
+        <input
+          className="email"
+          value={this.state.email}
+          type="email"
+          onChange={this.handleChange}
+          name="email"
+          placeholder="email"
+          required
+        />
+        <input
+          className="password"
+          value={this.state.password}
+          type="password"
+          onChange={this.handleChange}
+          name="password"
+          placeholder="password"
+          required
+        />
+        <button
+          type="submit"
+        >login</button>
+      </form>
     )
   }
 }

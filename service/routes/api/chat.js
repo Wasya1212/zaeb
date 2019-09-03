@@ -52,7 +52,7 @@ router.post('/api/chat/create', async ctx => {
 });
 
 router.post('/api/chat/message', async ctx => {
-  const conversation = await ChatModel.findOne({private: true, users: { $all: [ctx.state.userId, ctx.request.body.interlocutorId] }});
+  const conversation = await ChatModel.findOne({private: true, users: {$all: [ctx.state.userId, ctx.request.body.interlocutorId]}});
 
   if (!conversation) {
     const chat = new ChatModel({
@@ -72,11 +72,13 @@ router.post('/api/chat/message', async ctx => {
       await message.save();
 
       await ChatModel.updateOne({_id: chat._id}, {$push: {messages: message._id}});
-      await UserModel
-        .where({_id: {
-          $in: ([ctx.state.userId, ctx.request.body.interlocutorId]).map(mongoose.Types.ObjectId)}
-        })
-        .updateMany({ $push: { ['info.chats']: chat._id } }, { multi: true });
+      await UserModel.updateMany({
+        _id: {
+          $in: ([ctx.state.userId, ctx.request.body.interlocutorId]).map(mongoose.Types.ObjectId)
+        }
+      }, {
+        $push: { ['info.chats']: chat._id }
+      });
 
       ctx.body = message;
     } catch (e) {
@@ -84,7 +86,21 @@ router.post('/api/chat/message', async ctx => {
       ctx.throw(403, "Cannot create message!");
     }
   } else {
+    try {
+      const message = new MessageModel({
+        author: ctx.state.userId,
+        chat: conversation._id,
+        text: ctx.request.body.message
+      });
 
+      await message.save();
+      await conversation.updateOne({$push: {messages: message._id}});
+
+      ctx.body = message;
+    } catch (e) {
+      console.log(e)
+      ctx.throw(403, "Cannot create message!");
+    }
   }
 });
 

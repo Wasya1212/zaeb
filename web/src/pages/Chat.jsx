@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 
 import axios from 'axios';
 
-import Auth from '../components/Auth.jsx';
+import { Auth } from '../components/Auth.jsx';
 import { ChatList, CreateChatComponent as CreateChat } from '../components/Chat.jsx';
 
 Modal.setAppElement('#root');
@@ -60,9 +60,8 @@ class Chat extends Component {
           <CreateChat afterCreate={this.afterChatCreate} />
           <button onClick={this.closeCreateChatForm}>Close modal</button>
         </Modal>
-        <span>chat</span>
-        <ChatList chats={this.state.chats} />
         <button className="create-chat-btn" onClick={this.showCreateChatForm}>Create chat</button>
+        <ChatList chats={this.state.chats} />
       </div>
     );
   }

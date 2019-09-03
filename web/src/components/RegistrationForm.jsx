@@ -74,46 +74,44 @@ class RegistrationForm extends Component {
 
   render() {
     return (
-      <div>
-        <form onSubmit={this.handleSubmit}>
-          <input
-            name="username"
-            type="text"
-            placeholder="full name"
-            onChange={this.handleChange}
-            required="required"
-          />
-          <input
-            name="email"
-            type="email"
-            placeholder="email"
-            onChange={this.handleChange}
-            required="required"
-          />
-          <input
-            name="reEmail"
-            type="email"
-            placeholder="retype email"
-            onChange={this.handleChange}
-            required="required"
-          />
-          <input
-            name="password"
-            type="password"
-            placeholder="password"
-            onChange={this.handleChange}
-            required="required"
-          />
-          <input
-            name="rePassword"
-            type="password"
-            placeholder="retype password"
-            onChange={this.handleChange}
-            required="required"
-          />
-          <button type="submit">sign up</button>
-        </form>
-      </div>
+      <form className="registration-form" onSubmit={this.handleSubmit}>
+        <input
+          name="username"
+          type="text"
+          placeholder="full name"
+          onChange={this.handleChange}
+          required="required"
+        />
+        <input
+          name="email"
+          type="email"
+          placeholder="email"
+          onChange={this.handleChange}
+          required="required"
+        />
+        <input
+          name="reEmail"
+          type="email"
+          placeholder="retype email"
+          onChange={this.handleChange}
+          required="required"
+        />
+        <input
+          name="password"
+          type="password"
+          placeholder="password"
+          onChange={this.handleChange}
+          required="required"
+        />
+        <input
+          name="rePassword"
+          type="password"
+          placeholder="retype password"
+          onChange={this.handleChange}
+          required="required"
+        />
+        <button type="submit">sign up</button>
+      </form>
     );
   }
 }

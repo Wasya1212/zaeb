@@ -36,8 +36,10 @@ class UsersList extends Component {
 
   render() {
     return (
-      <ul>
-        {this.props.users.map(user => (<li onClick={() => { this.showUserModal(user); }}><UserView user={user}/></li>))}
+      <div>
+        <ul {...this.props} className="users-search-list">
+          {this.props.users.map(user => (<li className="users-search-list__item" onClick={() => { this.showUserModal(user); }}><UserProfile user={user}/></li>))}
+        </ul>
         <Modal
           isOpen={this.state.userModalIsOpen}
           onRequestClose={this.closeUserModal}
@@ -52,25 +54,18 @@ class UsersList extends Component {
             ) : null}
           <button onClick={this.closeUserModal}>Close modal</button>
         </Modal>
-      </ul>
+      </div>
     );
   }
 }
-
-const UserProfile = ({user}) => (
-  <div>
-    <span>{user._id}</span>
-    <span>{user.email}</span>
-    <span>{user.info.name}</span>
-  </div>
-);
 
 class SearchUsersButton extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      users: []
+      users: [],
+      checked: false
     };
   }
 
@@ -87,20 +82,53 @@ class SearchUsersButton extends Component {
 
   handleUsersChange = e => {
     if (e.target.value === '') {
-      return;
+      this.setState({
+        users: []
+      });
+    } else {
+      this.findUsers(e.target.value);
     }
+  }
 
-    this.findUsers(e.target.value);
+  hideUsersList = e => {
+    setTimeout(() => {
+      this.setState({
+        checked: false
+      });
+    }, 200);
+  }
+
+  showUsersList = e => {
+    this.setState({
+      checked: true
+    });
   }
 
   render() {
     return (
-      <div>
-        <input onChange={this.handleUsersChange} />
-        <UsersList users={this.state.users} />
-      </div>
+      <form className="users-search-form">
+        <input
+          onFocus={this.showUsersList}
+          onBlur={this.hideUsersList}
+          placeholder="Users search..."
+          onChange={this.handleUsersChange}
+        />
+        <UsersList hidden={!this.state.checked} users={this.state.users} />
+      </form>
     );
   }
 }
 
-export { SearchUsersButton, UsersList };
+const UserProfile = props => (
+  <div {...props} className="user-profile">
+    <div className="user-profile__picture">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc5zNZV5Uc6ZwS4JAxBVS0DiqUtIAR_Q5u6-G42vMfNk3mFFLj" />
+    </div>
+    <div className="user-profile__info">
+      <div className="user-profile__name">{props.user.info.name}</div>
+      <div className="user-profile__email">{props.user.email}</div>
+    </div>
+  </div>
+);
+
+export { SearchUsersButton, UsersList, UserProfile };

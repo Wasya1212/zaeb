@@ -13,6 +13,31 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
+class LogoutComponent extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  logout = () => {
+    axios
+      .post('/api/auth/logout', { token: localStorage.getItem('token') })
+      .then(() => {
+        this.props.removeAuthentication();
+        localStorage.removeItem('token');
+        window.location.reload();
+      })
+      .catch(err => {
+        console.error(err);
+      })
+  }
+
+  render() {
+    return (
+      <span {...this.props} onClick={this.logout}>{this.props.children || 'logout'}</span>
+    )
+  }
+}
+
 class AuthComponent extends Component {
   constructor(props) {
     super(props);
@@ -67,5 +92,6 @@ class AuthComponent extends Component {
 }
 
 const Auth = connect(null, mapDispatchToProps)(AuthComponent);
+const LogoutBtn = connect(null, mapDispatchToProps)(LogoutComponent);
 
-export default Auth;
+export {Auth, LogoutBtn};

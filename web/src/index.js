@@ -20,6 +20,8 @@ import ProfilePage from './pages/Profile.jsx';
 import ChatPage from './pages/Chat.jsx';
 import MessagePage from './pages/Message.jsx';
 
+import "./styles/style.sass";
+
 window.store = store;
 window.addArticle = addArticle;
 window.addToken = addToken;
@@ -43,7 +45,7 @@ ReactDOM.render(
         <Route path="/sign-up" component={SignUpPage} />
         <Route path="/profile" component={ProfilePage} />
         <Route exact path="/chat" component={ChatPage} />
-        <Route path="/chat/:chatId" component={MessagePage}/>
+        <Route path="/chat/:chatId" component={MessagePage} />
       </Switch>
     </BrowserRouter>
   </Provider>,

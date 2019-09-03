@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import Auth from '../components/Auth.jsx';
+import { Auth } from '../components/Auth.jsx';
 
 class Profile extends Component {
   constructor(props) {
