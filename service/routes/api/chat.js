@@ -23,6 +23,7 @@ router.post('/api/chat/conversation', async ctx => {
   await ChatModel
     .findOne({private: true, users: { $all: [ctx.state.userId, ctx.request.body.interlocutorId] }})
     .then(chat => {
+      console.log([ctx.state.userId, ctx.request.body.interlocutorId])
       ctx.body = chat;
     })
     .catch(err => {
@@ -52,7 +53,25 @@ router.post('/api/chat/create', async ctx => {
 });
 
 router.post('/api/chat/message', async ctx => {
-  const conversation = await ChatModel.findOne({private: true, users: {$all: [ctx.state.userId, ctx.request.body.interlocutorId]}});
+  let conversation;
+
+  if (!ctx.request.body.chatId && !ctx.request.body.interlocutorId) {
+    ctx.throw(401, "No message data found!");
+  }
+
+  try {
+    const chat = await ChatModel.findById(ctx.request.body.chatId);
+
+    if (!chat || chat == {}) {
+      conversation = await ChatModel.findOne({private: true, users: {$all: [ctx.state.userId, ctx.request.body.interlocutorId]}});
+    } else {
+      conversation = chat;
+    }
+  } catch (e) {
+    ctx.throw(e);
+  }
+
+  console.log(conversation);
 
   if (!conversation) {
     const chat = new ChatModel({
@@ -102,6 +121,35 @@ router.post('/api/chat/message', async ctx => {
       ctx.throw(403, "Cannot create message!");
     }
   }
+});
+
+router.post('/api/chat/messages', async ctx => {
+  try {
+    const chat =  await ChatModel.findById(ctx.request.body.chatId);
+    const users = await UserModel.find({ _id: { $in: chat.users } });
+
+    let messages = await MessageModel.find({ _id: { $in: chat.messages } });
+
+    messages = messages.map(message => {
+      return Object.assign({}, {
+        author: users.find(user => user._id.toString() == message.author.toString()),
+        chat: chat,
+        text: message.text,
+        createdAt: message.createdAt
+      });
+    });
+
+    ctx.body = messages;
+  } catch (e) {
+    console.log(e);
+    ctx.throw(403, "Cannot find messages!");
+  }
+});
+
+router.post('/api/chat/discussion', async ctx => {
+  const chat = await ChatModel.findById(ctx.request.body.chatId);
+
+  ctx.body = chat;
 });
 
 module.exports = router;

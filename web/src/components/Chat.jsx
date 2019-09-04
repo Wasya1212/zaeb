@@ -38,7 +38,7 @@ const ChatList = props => {
         {
           props.chats
             .filter(chat => chat.name === 'conversation')
-            .map(chat => <li className="chat-list__item"><Link to={"/chat/" + chat._id.toString()}><ChatView chat={chat} /></Link></li>)
+            .map(chat => <li className="chat-list__item"><Link to={"/chat/conversation/" + chat.users[1].toString()}><ChatView chat={chat} /></Link></li>)
         }
       </ul>
       <ul className="chat-list">
@@ -46,7 +46,7 @@ const ChatList = props => {
         {
           props.chats
             .filter(chat => chat.name !== 'conversation')
-            .map(chat => <li className="chat-list__item"><Link to={"/chat/" + chat._id.toString()}><ChatView chat={chat} /></Link></li>)
+            .map(chat => <li className="chat-list__item"><Link to={"/chat/discussion/" + chat._id.toString()}><ChatView chat={chat} /></Link></li>)
         }
       </ul>
     </div>
@@ -108,12 +108,4 @@ class CreateChatComponent extends Component {
   }
 }
 
-const MessageList = ({messages}) => (
-  <ul>
-    {
-      messages.map(message => <li>{message.text}</li>)
-    }
-  </ul>
-);
-
-export { CreateChatComponent, ChatList, MessageList };
+export { CreateChatComponent, ChatList };

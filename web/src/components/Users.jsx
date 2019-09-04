@@ -4,12 +4,6 @@ import { Link } from 'react-router-dom';
 
 import axios from 'axios';
 
-const UserView = ({user}) => (
-  <div>
-    {user.email}
-  </div>
-);
-
 class UsersList extends Component {
   constructor(props) {
     super(props);
@@ -49,7 +43,7 @@ class UsersList extends Component {
             this.state.userModalIsOpen ? (
               <div>
                 <UserProfile user={this.state.user} />
-                <Link to={"/chat/" + this.state.user._id.toString()} onClick={this.closeUserModal}>Go to messaging</Link>
+                <Link to={"/chat/conversation/" + this.state.user._id.toString()} onClick={this.closeUserModal}>Go to messaging</Link>
               </div>
             ) : null}
           <button onClick={this.closeUserModal}>Close modal</button>

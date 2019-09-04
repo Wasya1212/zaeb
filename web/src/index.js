@@ -45,7 +45,7 @@ ReactDOM.render(
         <Route path="/sign-up" component={SignUpPage} />
         <Route path="/profile" component={ProfilePage} />
         <Route exact path="/chat" component={ChatPage} />
-        <Route path="/chat/:chatId" component={MessagePage} />
+        <Route path="/chat/:direction/:chatId" component={MessagePage} />
       </Switch>
     </BrowserRouter>
   </Provider>,
