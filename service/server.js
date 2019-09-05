@@ -40,8 +40,12 @@ app.on('error', (err, ctx) => {
 app.use(cors());
 app.use(serve(path.resolve(__dirname, 'public')));
 app.use(koaBody({
-   multipart: true,
-   urlencoded: true
+  formidable: {
+    uploadDir: './uploads',
+    keepExtensions: true
+  },
+  multipart: true,
+  urlencoded: true
 }));
 
 app.use(authRouter.routes(), authRouter.allowedMethods());

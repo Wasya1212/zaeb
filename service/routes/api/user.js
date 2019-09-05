@@ -1,7 +1,10 @@
 const Router = require('koa-router');
 const mongoose = require('mongoose');
+const fs = require('fs');
 
 const UserModel = require('../../models/user');
+
+const upload = require('../../middleware/upload');
 
 const router = new Router();
 
@@ -21,9 +24,38 @@ router.post('/api/user/current-user', async ctx => {
 });
 
 router.post('/api/user/edit', async ctx => {
-  console.log(ctx.request.body);
-  console.log(ctx.request.files)
-  ctx.body = ctx.request.body;
+  let uploadedAvatar;
+
+  console.log(JSON.parse(ctx.request.body.workDays).map(num => Number(num)));
+
+  try {
+    uploadedAvatar = await upload(ctx.request.files.file.path.toString());
+    fs.unlinkSync(ctx.request.files.file.path.toString());
+  } catch (e) {
+    uploadedAvatar = { secure_url: ctx.request.body.avatarImage || '' }
+  } finally {
+    console.log(JSON.parse(ctx.request.body.workDays));
+  }
+
+  const updatedUser = await UserModel.findByIdAndUpdate(ctx.state.userId, {
+    $set: {
+      info: {
+        phone: ctx.request.body.phone,
+        photo: uploadedAvatar.secure_url,
+        salary: ctx.request.body.salary,
+        post: ctx.request.body.post,
+        status: {
+          work_times: [{
+            start: ctx.request.body.startWorkTime,
+            end: ctx.request.body.endWorkTime
+          }],
+          $push: {work_days: {$each: [1,2,3,4]}}
+        }
+      }
+    }
+  }, { upsert: true });
+
+  ctx.body = updatedUser;
 });
 
 module.exports = router;

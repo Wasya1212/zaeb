@@ -10,7 +10,11 @@ class Profile extends Component {
     super(props);
 
     this.state = {
-      user: {}
+      user: {
+        info: {
+          
+        }
+      }
     };
   }
 
@@ -19,6 +23,7 @@ class Profile extends Component {
       .post('/api/user/current-user', {token: localStorage.getItem('token')})
       .then(({data: user}) => {
         this.setState({user});
+        console.log()
       })
       .catch(err => {
         console.error(err);
@@ -30,6 +35,7 @@ class Profile extends Component {
       <div>
         <Auth failureRedirect="/sign-in" />
         <span>Profile</span>
+        {this.state.user.info.phone}
         <UserSettingsButton user={this.state.user} />
       </div>
     );

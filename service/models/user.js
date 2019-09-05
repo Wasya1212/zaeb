@@ -115,13 +115,7 @@ const UserSchema = new mongoose.Schema({
         }
       }],
       work_days: [{
-        type: Number,
-        validate: {
-          validator: function(v) {
-            return (v >= 1 && v <= 7 )
-          },
-          message: 'Day has been selected only between 1 and 7!'
-        }
+        type: Number
       }],
       work_times: [{
         start: {
