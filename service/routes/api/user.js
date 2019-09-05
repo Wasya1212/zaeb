@@ -15,4 +15,15 @@ router.post('/api/user', async ctx => {
   ctx.body = user;
 });
 
+router.post('/api/user/current-user', async ctx => {
+  console.log(ctx.state.user)
+  ctx.body = ctx.state.user;
+});
+
+router.post('/api/user/edit', async ctx => {
+  console.log(ctx.request.body);
+  console.log(ctx.request.files)
+  ctx.body = ctx.request.body;
+});
+
 module.exports = router;

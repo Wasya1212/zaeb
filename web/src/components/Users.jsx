@@ -125,4 +125,131 @@ const UserProfile = props => (
   </div>
 );
 
-export { SearchUsersButton, UsersList, UserProfile };
+class UserSettingsButton extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      userModalIsOpen: false,
+      selectedFile: null,
+      workDays: [],
+      salary: 0,
+      startWorkTime: '',
+      endWorkTime: ''
+    };
+  }
+
+  showUserModal = user => {
+    this.setState({
+      userModalIsOpen: true
+    });
+  }
+
+  closeUserModal = () => {
+    this.setState({
+      userModalIsOpen: false
+    });
+  }
+
+  onFileChange = e => {
+    this.setState({
+      selectedFile: e.target.files[0]
+    })
+  }
+
+  onWorkDaysChange = e => {
+    if (e.target.checked) {
+      this.setState({
+        workDays: this.state.workDays.concat(e.target.value)
+      });
+    } else {
+      this.setState({
+        workDays: this.state.workDays.filter(workDay => workDay != e.target.value)
+      });
+    }
+  }
+
+  onSalaryChange = e => {
+    this.setState({
+      salary: e.target.value
+    });
+  }
+
+  onPostChange = e => {
+    this.setState({
+      post: e.target.value
+    });
+  }
+
+  onStartWorkTimeChange = e => {
+    this.setState({
+      startWorkTime: e.target.value
+    });
+  }
+
+  onEndWorkTimeChange = e => {
+    this.setState({
+      endWorkTime: e.target.value
+    });
+  }
+
+  onSubmit = e => {
+    e.preventDefault();
+
+    const data = new FormData();
+    data.append('token', localStorage.getItem('token'));
+    data.append('file', this.state.selectedFile);
+    data.append('workDays', JSON.stringify(this.state.workDays));
+    data.append('salary', this.state.salary);
+    data.append('post', this.state.post);
+    data.append('startWorkTime', this.state.startWorkTime);
+    data.append('endWorkTime', this.state.endWorkTime);
+
+    axios.post("/api/user/edit", data)
+      .then(res => {
+        console.log(res)
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }
+
+  render() {
+    return (
+      <div>
+        <button onClick={this.showUserModal}>Settings</button>
+        <Modal
+          isOpen={this.state.userModalIsOpen}
+          onRequestClose={this.closeUserModal}
+          contentLabel="Find users"
+        >
+          <form onSubmit={this.onSubmit}>
+            <p><label>Photo</label><input onChange={this.onFileChange} name="photo" type="file" placeholder="choose photo" /></p>
+            <p><label>salary</label><input onChange={this.onSalaryChange} placeholder="UAH" name="salary" type="number" /></p>
+            <p><label>Post</label><input onChange={this.onPostChange} name="post" type="text" /></p>
+            <p>
+              <label>Work Days</label>
+              <div><label>Monday</label><input onChange={this.onWorkDaysChange} value="1" type="checkbox" name="workDay" id="" /></div>
+              <div><label>Tuesday</label><input onChange={this.onWorkDaysChange} value="2" type="checkbox" name="workDay" id="" /></div>
+              <div><label>Wednesday</label><input onChange={this.onWorkDaysChange} value="3" type="checkbox" name="workDay" id="" /></div>
+              <div><label>Thursday</label><input onChange={this.onWorkDaysChange} value="4"  type="checkbox" name="workDay" id="" /></div>
+              <div><label>Friday</label><input onChange={this.onWorkDaysChange} value="5" type="checkbox" name="workDay" id="" /></div>
+              <div><label>Saturday</label><input onChange={this.onWorkDaysChange} value="6" type="checkbox" name="workDay" id="" /></div>
+              <div><label>Sunday</label><input onChange={this.onWorkDaysChange} value="7" type="checkbox" name="workDay" id="" /></div>
+            </p>
+            <p>
+              <label>Work times</label>
+              <input onChange={this.onStartWorkTimeChange} name="workStart" type="time" />
+              <input onChange={this.onEndWorkTimeChange} name="workEnd" type="time" />
+            </p>
+            <input type="submit" value="Confirm" />
+          </form>
+
+          <button className="close-modal-btn" onClick={this.closeUserModal}>Close modal</button>
+        </Modal>
+      </div>
+    );
+  }
+}
+
+export { SearchUsersButton, UsersList, UserProfile, UserSettingsButton };
