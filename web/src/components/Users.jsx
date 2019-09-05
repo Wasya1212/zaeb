@@ -46,7 +46,7 @@ class UsersList extends Component {
                 <Link to={"/chat/conversation/" + this.state.user._id.toString()} onClick={this.closeUserModal}>Go to messaging</Link>
               </div>
             ) : null}
-          <button onClick={this.closeUserModal}>Close modal</button>
+          <button className="close-modal-btn" onClick={this.closeUserModal}>Close modal</button>
         </Modal>
       </div>
     );

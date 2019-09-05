@@ -20,24 +20,18 @@ import ProfilePage from './pages/Profile.jsx';
 import ChatPage from './pages/Chat.jsx';
 import MessagePage from './pages/Message.jsx';
 
+import { Auth } from './components/Auth.jsx';
+
 import "./styles/style.sass";
 
 window.store = store;
 window.addArticle = addArticle;
 window.addToken = addToken;
 
-store.subscribe(() => console.log('Look ma, Redux!!'));
-
-console.log(store.getState());
-
-store.dispatch( addArticle({ title: 'React Redux Tutorial for Beginners', id: 1 }) )
-// store.dispatch( addToken({ val: 'token', id: 1 }) )
-
-console.log(store.getState());
-
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
+      <Auth failureRedirect="/sign-in"  />
       <Header />
 
       <Switch>

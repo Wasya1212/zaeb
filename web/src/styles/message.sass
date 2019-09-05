@@ -1,4 +1,4 @@
-.messages-list
+.messages-container
   max-width: 1200px
   margin: 0 auto
   display: block
@@ -6,6 +6,21 @@
   border-width: 0 1px 1px 1px
   border-style: solid
   border-color: #ebebeb
+  padding: 1rem
+  box-sizing: border-box
+  position: relative
+
+.messages-list
+  max-width: 100%
+  overflow: auto
+  max-height: calc(100vh - 150px)
+  min-height: calc(100vh - 150px)
+  .message
+    max-width: 900px
+    margin-left: 3rem
+    background-color: #ebebeb
+    padding: 1rem
+    border-radius: 10px
 
 .user-view
   width: 250px
@@ -33,3 +48,74 @@
     font-weight: bold
     display: block
     user-select: none
+
+.message-form
+  width: 100%
+  height: auto
+  margin-top: 1rem
+  input
+    outline: none
+    width: calc(100% - 150px)
+    padding: .5rem 1rem
+    box-sizing: border-box
+    height: auto
+    border-radius: 5px 0 0 5px
+    border: 1px solid #ebebeb
+  button
+    outline: none
+    width: 150px
+    padding: .5rem 1rem
+    cursor: pointer
+    border: 1px solid #ebebeb
+    box-sizing: border-box
+    margin: 0
+    background: rgb(255,255,255)
+    background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(245,245,245,1) 67%, rgba(244,244,244,1) 100%)
+    &:hover
+      background: #ffffff
+
+.add-users-to-chat-list
+  li
+    display: -webkit-flex
+    display: -ms-flex
+    display: flex
+    align-items: flex-start
+    align-items: center
+    >div:first-child
+      width: 300px
+
+.add-users-to-chat-input
+  padding: .5rem 1rem
+  box-sizing: border-box
+  outline: none
+  border-radius: 10px
+  border: 1px solid #ebebeb
+  width: calc(100% - 2rem)
+  margin: 1rem
+
+.add-users-to-chat-btn
+  border-radius: 5px
+  padding: .5rem 1rem
+  border: 1px solid #ebebeb
+  box-sizing: border-box
+  background-color: #ffffff
+  cursor: pointer
+  outline: none
+  &:hover
+    background: rgb(255,255,255)
+    background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(245,245,245,1) 67%, rgba(244,244,244,1) 100%)
+
+.add-user-btn
+  position: absolute
+  right: 1rem
+  top: 1rem
+  button
+    border-radius: 5px
+    padding: .5rem 1rem
+    cursor: pointer
+    border: 1px solid #ebebeb
+    box-sizing: border-box
+    background: rgb(255,255,255)
+    background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(245,245,245,1) 67%, rgba(244,244,244,1) 100%)
+    &:hover
+      background: #ffffff

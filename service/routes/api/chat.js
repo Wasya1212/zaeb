@@ -19,6 +19,13 @@ router.post('/api/chat/chat-rooms', async ctx => {
     })
 });
 
+router.post('/api/chat/add-user', async ctx => {
+  const chat = await ChatModel.findByIdAndUpdate(ctx.request.body.chatId, { $push: { users: ctx.request.body.userId} });
+  const user = await UserModel.findByIdAndUpdate(ctx.request.body.userId, { $push: { ['info.chats']: ctx.request.body.chatId} });
+
+  ctx.body = chat;
+});
+
 router.post('/api/chat/conversation', async ctx => {
   await ChatModel
     .findOne({private: true, users: { $all: [ctx.state.userId, ctx.request.body.interlocutorId] }})
@@ -135,7 +142,8 @@ router.post('/api/chat/messages', async ctx => {
         author: users.find(user => user._id.toString() == message.author.toString()),
         chat: chat,
         text: message.text,
-        createdAt: message.createdAt
+        createdAt: message.createdAt,
+        _id: message._id
       });
     });
 

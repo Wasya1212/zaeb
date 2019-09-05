@@ -58,7 +58,7 @@ class Chat extends Component {
           contentLabel="Create chat"
         >
           <CreateChat afterCreate={this.afterChatCreate} />
-          <button onClick={this.closeCreateChatForm}>Close modal</button>
+          <button className="close-modal-btn" onClick={this.closeCreateChatForm}>Close modal</button>
         </Modal>
         <button className="create-chat-btn" onClick={this.showCreateChatForm}>Create chat</button>
         <ChatList chats={this.state.chats} />

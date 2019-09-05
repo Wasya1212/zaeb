@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import axios from "axios";
 
-import { MessageList } from "../components/Chat.jsx";
+import { MessageList, AddUserToChatBtn } from "../components/Chat.jsx";
 
 import "../styles/message.sass";
 
@@ -116,11 +116,14 @@ class Message extends Component {
 
   render() {
     return (
-      <div className="messages-list">
-        <ul>
+      <div className="messages-container">
+        {
+          this.props.match.params.direction === 'discussion' ? <AddUserToChatBtn chatId={this.state.chatId}/> : null
+        }
+        <ul className="messages-list">
           {
             this.state.messages.map(message => (
-              <li>
+              <li key={message._id}>
                 <div className="user-view">
                   <div className="user-view__picture">
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc5zNZV5Uc6ZwS4JAxBVS0DiqUtIAR_Q5u6-G42vMfNk3mFFLj" />
@@ -135,8 +138,8 @@ class Message extends Component {
             ))
           }
         </ul>
-        <form onSubmit={this.sendMessage}>
-          <input onChange={this.handleMessageChange} placeholder="Enter message..." />
+        <form className="message-form" onSubmit={this.sendMessage}>
+          <input type="text" required="required" onChange={this.handleMessageChange} placeholder="Enter message..." />
           <button type="submit">send</button>
         </form>
       </div>
