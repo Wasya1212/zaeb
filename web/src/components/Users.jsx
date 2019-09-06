@@ -116,12 +116,36 @@ class SearchUsersButton extends Component {
 const UserProfile = props => (
   <div {...props} className="user-profile">
     <div className="user-profile__picture">
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc5zNZV5Uc6ZwS4JAxBVS0DiqUtIAR_Q5u6-G42vMfNk3mFFLj" />
+      <img src={props.user.info.photo || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc5zNZV5Uc6ZwS4JAxBVS0DiqUtIAR_Q5u6-G42vMfNk3mFFLj"} />
     </div>
     <div className="user-profile__info">
       <div className="user-profile__name">{props.user.info.name}</div>
       <div className="user-profile__email">{props.user.email}</div>
     </div>
+  </div>
+);
+
+const UserView = ({user}) => (
+  <div className="user-info">
+    <div className="user-info__picture">
+      <img src={user.info.photo || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc5zNZV5Uc6ZwS4JAxBVS0DiqUtIAR_Q5u6-G42vMfNk3mFFLj"} />
+    </div>
+    <ul>
+      <li>{user.info.name}</li>
+      <li>{user.email}</li>
+      <li>{user.info.post}</li>
+      <li>{user.info.salary}</li>
+      <li>{(user.info.status.work_times.start || '') + ' - ' + (user.info.status.work_times.end || '')}</li>
+      <li>
+        <div className={user.info.status.work_days.indexOf(1) != -1 ? "day" : "day active-day"}>Mn</div>
+        <div className={user.info.status.work_days.indexOf(2) != -1 ? "day" : "day active-day"}>Ts</div>
+        <div className={user.info.status.work_days.indexOf(3) != -1 ? "day" : "day active-day"}>Wd</div>
+        <div className={user.info.status.work_days.indexOf(4) != -1 ? "day" : "day active-day"}>Th</div>
+        <div className={user.info.status.work_days.indexOf(5) != -1 ? "day" : "day active-day"}>Fd</div>
+        <div className={user.info.status.work_days.indexOf(6) != -1 ? "day" : "day active-day"}>St</div>
+        <div className={user.info.status.work_days.indexOf(7) != -1 ? "day" : "day active-day"}>Sn</div>
+      </li>
+    </ul>
   </div>
 );
 
@@ -133,7 +157,7 @@ class UserSettingsButton extends Component {
       this.state = {
         userModalIsOpen: false,
         selectedFile: null,
-        workDays: this.props.user.info.status.work_days || [],
+        workDays: [],
         salary: this.props.user.info || 0,
         post: this.props.user.info.post || '',
         startWorkTime: this.props.user.info.status.work_times[0].start || '',
@@ -293,4 +317,4 @@ class UserSettingsButton extends Component {
   }
 }
 
-export { SearchUsersButton, UsersList, UserProfile, UserSettingsButton };
+export { UserView, SearchUsersButton, UsersList, UserProfile, UserSettingsButton };

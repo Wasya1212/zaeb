@@ -26,8 +26,6 @@ router.post('/api/user/current-user', async ctx => {
 router.post('/api/user/edit', async ctx => {
   let uploadedAvatar;
 
-  console.log(JSON.parse(ctx.request.body.workDays).map(num => Number(num)));
-
   try {
     uploadedAvatar = await upload(ctx.request.files.file.path.toString());
     fs.unlinkSync(ctx.request.files.file.path.toString());
@@ -40,6 +38,8 @@ router.post('/api/user/edit', async ctx => {
   const updatedUser = await UserModel.findByIdAndUpdate(ctx.state.userId, {
     $set: {
       info: {
+        name: ctx.state.user.info.name,
+        chats: ctx.state.user.info.chats,
         phone: ctx.request.body.phone,
         photo: uploadedAvatar.secure_url,
         salary: ctx.request.body.salary,
@@ -49,11 +49,11 @@ router.post('/api/user/edit', async ctx => {
             start: ctx.request.body.startWorkTime,
             end: ctx.request.body.endWorkTime
           }],
-          $push: {work_days: {$each: [1,2,3,4]}}
+          work_days: JSON.parse(ctx.request.body.workDays).map(num => Number(num))
         }
       }
     }
-  }, { upsert: true });
+  }, { upsert: true, new: true });
 
   ctx.body = updatedUser;
 });

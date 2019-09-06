@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 
 import { Auth } from '../components/Auth.jsx';
-import { UserSettingsButton } from '../components/Users.jsx';
+import { UserSettingsButton, UserView } from '../components/Users.jsx';
 
 class Profile extends Component {
   constructor(props) {
@@ -12,7 +12,10 @@ class Profile extends Component {
     this.state = {
       user: {
         info: {
-          
+          status: {
+            work_times: {},
+            work_days: []
+          }
         }
       }
     };
@@ -37,6 +40,7 @@ class Profile extends Component {
         <span>Profile</span>
         {this.state.user.info.phone}
         <UserSettingsButton user={this.state.user} />
+        <UserView user={this.state.user} />
       </div>
     );
   }
