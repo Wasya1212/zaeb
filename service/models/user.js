@@ -117,28 +117,14 @@ const UserSchema = new mongoose.Schema({
       work_days: [{
         type: Number
       }],
-      work_times: [{
+      work_times: {
         start: {
-          type: String,
-          required: true,
-          validate: {
-            validator: function(time) {
-              return /^(?:[01]\d|2[0123]):(?:[012345]\d)$/m.test(time);
-            },
-            message: '{VALUE} is wrong time format!'
-          }
+          type: String
         },
         end: {
-          type: String,
-          required: true,
-          validate: {
-            validator: function(time) {
-              return /^(?:[01]\d|2[0123]):(?:[012345]\d)$/m.test(time);
-            },
-            message: '{VALUE} is wrong time format!'
-          }
+          type: String
         }
-      }]
+      }
     }
   },
 }, { timestamps: true });

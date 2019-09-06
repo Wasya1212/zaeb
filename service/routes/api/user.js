@@ -45,10 +45,10 @@ router.post('/api/user/edit', async ctx => {
         salary: ctx.request.body.salary,
         post: ctx.request.body.post,
         status: {
-          work_times: [{
+          work_times: {
             start: ctx.request.body.startWorkTime,
             end: ctx.request.body.endWorkTime
-          }],
+          },
           work_days: JSON.parse(ctx.request.body.workDays).map(num => Number(num))
         }
       }

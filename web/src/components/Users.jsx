@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 
 import axios from 'axios';
 
+import "../styles/user.sass";
+
 class UsersList extends Component {
   constructor(props) {
     super(props);
@@ -42,7 +44,7 @@ class UsersList extends Component {
           {
             this.state.userModalIsOpen ? (
               <div>
-                <UserProfile user={this.state.user} />
+                <UserView user={this.state.user} />
                 <Link to={"/chat/conversation/" + this.state.user._id.toString()} onClick={this.closeUserModal}>Go to messaging</Link>
               </div>
             ) : null}
@@ -130,20 +132,20 @@ const UserView = ({user}) => (
     <div className="user-info__picture">
       <img src={user.info.photo || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc5zNZV5Uc6ZwS4JAxBVS0DiqUtIAR_Q5u6-G42vMfNk3mFFLj"} />
     </div>
-    <ul>
-      <li>{user.info.name}</li>
-      <li>{user.email}</li>
-      <li>{user.info.post}</li>
-      <li>{user.info.salary}</li>
-      <li>{(user.info.status.work_times.start || '') + ' - ' + (user.info.status.work_times.end || '')}</li>
-      <li>
-        <div className={user.info.status.work_days.indexOf(1) != -1 ? "day" : "day active-day"}>Mn</div>
-        <div className={user.info.status.work_days.indexOf(2) != -1 ? "day" : "day active-day"}>Ts</div>
-        <div className={user.info.status.work_days.indexOf(3) != -1 ? "day" : "day active-day"}>Wd</div>
-        <div className={user.info.status.work_days.indexOf(4) != -1 ? "day" : "day active-day"}>Th</div>
-        <div className={user.info.status.work_days.indexOf(5) != -1 ? "day" : "day active-day"}>Fd</div>
-        <div className={user.info.status.work_days.indexOf(6) != -1 ? "day" : "day active-day"}>St</div>
-        <div className={user.info.status.work_days.indexOf(7) != -1 ? "day" : "day active-day"}>Sn</div>
+    <ul className="user-info__list">
+      <li className="user-info__name">name: {user.info.name || ''}</li>
+      <li className="user-info__email">email: {user.email || ''}</li>
+      <li className="user-info__post">post: {user.info.post || ''}</li>
+      <li className="user-info__salary">salary: {user.info.salary || ''} UAH</li>
+      <li className="user-info__work-time">workin time:{(user.info.status.work_times.start || '') + ' - ' + (user.info.status.work_times.end || '')}</li>
+      <li className="user-info__work-days">
+        <div className={user.info.status.work_days.indexOf(1) == -1 ? "day" : "day active-day"}>Mn</div>
+        <div className={user.info.status.work_days.indexOf(2) == -1 ? "day" : "day active-day"}>Ts</div>
+        <div className={user.info.status.work_days.indexOf(3) == -1 ? "day" : "day active-day"}>Wd</div>
+        <div className={user.info.status.work_days.indexOf(4) == -1 ? "day" : "day active-day"}>Th</div>
+        <div className={user.info.status.work_days.indexOf(5) == -1 ? "day" : "day active-day"}>Fd</div>
+        <div className={user.info.status.work_days.indexOf(6) == -1 ? "day" : "day active-day"}>St</div>
+        <div className={user.info.status.work_days.indexOf(7) == -1 ? "day" : "day active-day"}>Sn</div>
       </li>
     </ul>
   </div>
@@ -157,15 +159,17 @@ class UserSettingsButton extends Component {
       this.state = {
         userModalIsOpen: false,
         selectedFile: null,
-        workDays: [],
-        salary: this.props.user.info || 0,
+        workDays: this.props.user.info.status.work_days || [],
+        salary: this.props.user.info.salary || 0,
         post: this.props.user.info.post || '',
-        startWorkTime: this.props.user.info.status.work_times[0].start || '',
-        endWorkTime: this.props.user.info.status.work_times[0].end || '',
+        startWorkTime: this.props.user.info.status.work_times.start || '',
+        endWorkTime: this.props.user.info.status.work_times.end || '',
         phone: this.props.user.info.phone || '',
-        avatarImage: this.props.user.info.photo || ''
+        avatarImage: this.props.user.info.photo || '',
+        updatedUser: {}
       };
     } catch (e) {
+      console.log(e)
       this.state = {
         userModalIsOpen: false,
         selectedFile: null,
@@ -175,7 +179,8 @@ class UserSettingsButton extends Component {
         startWorkTime: '',
         endWorkTime: '',
         phone: '',
-        avatarImage: ''
+        avatarImage: '',
+        updatedUser: {}
       };
     }
   }
@@ -270,8 +275,14 @@ class UserSettingsButton extends Component {
     data.append('avatarImage', this.state.avatarImage);
 
     axios.post("/api/user/edit", data, { headers: { 'content-type': 'multipart/form-data' }})
-      .then(res => {
-        console.log(res)
+      .then(({data: user}) => {
+        this.setState({updatedUser: user});
+      })
+      .then(() => {
+        this.props.onUpdating(this.state.updatedUser);
+      })
+      .then(() => {
+        this.closeUserModal();
       })
       .catch(err => {
         console.error(err);
@@ -281,26 +292,26 @@ class UserSettingsButton extends Component {
   render() {
     return (
       <div>
-        <button onClick={this.showUserModal}>Settings</button>
+        <button className="user-settings-btn" onClick={this.showUserModal}>Settings</button>
         <Modal
           isOpen={this.state.userModalIsOpen}
           onRequestClose={this.closeUserModal}
           contentLabel="Find users"
         >
-          <form onSubmit={this.onSubmit}>
+          <form className="user-settings-form" onSubmit={this.onSubmit}>
             <p><label>Photo</label><input onChange={this.onFileChange} name="photo" type="file" placeholder="choose photo" /></p>
             <p><label>salary</label><input onChange={this.onSalaryChange} placeholder={`${this.props.user.info.salary} UAH`} name="salary" type="number" /></p>
             <p><label>Post</label><input onChange={this.onPostChange} placeholder={`${this.props.user.info.post || "enter your post"}`} name="post" type="text" /></p>
             <p><label>Phone</label><input onChange={this.onPhoneChange} placeholder={`${this.props.user.info.phone || "+380123456789"}`} name="phone" type="tel" /></p>
             <p>
               <label>Work Days</label>
-              <div><label>Monday</label>{this.props.user.info.workDays && this.props.user.info.workDays.indexOf(1) != -1 ? <input checked onChange={this.onWorkDaysChange} value="1" type="checkbox" name="workDay" id="" /> : <input onChange={this.onWorkDaysChange} value="1" type="checkbox" name="workDay" id="" />}</div>
-              <div><label>Tuesday</label>{this.props.user.info.workDays && this.props.user.info.workDays.indexOf(2) != -1 ? <input checked onChange={this.onWorkDaysChange} value="2" type="checkbox" name="workDay" id="" /> : <input onChange={this.onWorkDaysChange} value="2" type="checkbox" name="workDay" id="" />}</div>
-              <div><label>Wednesday</label>{this.props.user.info.workDays && this.props.user.info.workDays.indexOf(3) != -1 ? <input checked onChange={this.onWorkDaysChange} value="3" type="checkbox" name="workDay" id="" /> : <input onChange={this.onWorkDaysChange} value="3" type="checkbox" name="workDay" id="" />}</div>
-              <div><label>Thursday</label>{this.props.user.info.workDays && this.props.user.info.workDays.indexOf(4) != -1 ? <input checked onChange={this.onWorkDaysChange} value="4"  type="checkbox" name="workDay" id="" /> : <input onChange={this.onWorkDaysChange} value="4"  type="checkbox" name="workDay" id="" />}</div>
-              <div><label>Friday</label>{this.props.user.info.workDays && this.props.user.info.workDays.indexOf(5) != -1 ? <input checked onChange={this.onWorkDaysChange} value="5" type="checkbox" name="workDay" id="" /> : <input onChange={this.onWorkDaysChange} value="5" type="checkbox" name="workDay" id="" />}</div>
-              <div><label>Saturday</label>{this.props.user.info.workDays && this.props.user.info.workDays.indexOf(6) != -1 ? <input checked onChange={this.onWorkDaysChange} value="6" type="checkbox" name="workDay" id="" /> : <input onChange={this.onWorkDaysChange} value="6" type="checkbox" name="workDay" id="" />}</div>
-              <div><label>Sunday</label>{this.props.user.info.workDays && this.props.user.info.workDays.indexOf(7) != -1 ? <input checked onChange={this.onWorkDaysChange} value="7" type="checkbox" name="workDay" id="" /> : <input onChange={this.onWorkDaysChange} value="7" type="checkbox" name="workDay" id="" />}</div>
+              <div className="wd"><label>Monday</label>{this.props.user.info.workDays && this.props.user.info.workDays.indexOf(1) != -1 ? <input checked onChange={this.onWorkDaysChange} value="1" type="checkbox" name="workDay" id="" /> : <input onChange={this.onWorkDaysChange} value="1" type="checkbox" name="workDay" id="" />}</div>
+              <div className="wd"><label>Tuesday</label>{this.props.user.info.workDays && this.props.user.info.workDays.indexOf(2) != -1 ? <input checked onChange={this.onWorkDaysChange} value="2" type="checkbox" name="workDay" id="" /> : <input onChange={this.onWorkDaysChange} value="2" type="checkbox" name="workDay" id="" />}</div>
+              <div className="wd"><label>Wednesday</label>{this.props.user.info.workDays && this.props.user.info.workDays.indexOf(3) != -1 ? <input checked onChange={this.onWorkDaysChange} value="3" type="checkbox" name="workDay" id="" /> : <input onChange={this.onWorkDaysChange} value="3" type="checkbox" name="workDay" id="" />}</div>
+              <div className="wd"><label>Thursday</label>{this.props.user.info.workDays && this.props.user.info.workDays.indexOf(4) != -1 ? <input checked onChange={this.onWorkDaysChange} value="4"  type="checkbox" name="workDay" id="" /> : <input onChange={this.onWorkDaysChange} value="4"  type="checkbox" name="workDay" id="" />}</div>
+              <div className="wd"><label>Friday</label>{this.props.user.info.workDays && this.props.user.info.workDays.indexOf(5) != -1 ? <input checked onChange={this.onWorkDaysChange} value="5" type="checkbox" name="workDay" id="" /> : <input onChange={this.onWorkDaysChange} value="5" type="checkbox" name="workDay" id="" />}</div>
+              <div className="wd"><label>Saturday</label>{this.props.user.info.workDays && this.props.user.info.workDays.indexOf(6) != -1 ? <input checked onChange={this.onWorkDaysChange} value="6" type="checkbox" name="workDay" id="" /> : <input onChange={this.onWorkDaysChange} value="6" type="checkbox" name="workDay" id="" />}</div>
+              <div className="wd"><label>Sunday</label>{this.props.user.info.workDays && this.props.user.info.workDays.indexOf(7) != -1 ? <input checked onChange={this.onWorkDaysChange} value="7" type="checkbox" name="workDay" id="" /> : <input onChange={this.onWorkDaysChange} value="7" type="checkbox" name="workDay" id="" />}</div>
             </p>
             <p>
               <label>Work times</label>

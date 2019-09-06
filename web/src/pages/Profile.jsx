@@ -33,13 +33,15 @@ class Profile extends Component {
       });
   }
 
+  handleUserUpdate = user => {
+    this.setState({user});
+  }
+
   render() {
     return (
       <div>
         <Auth failureRedirect="/sign-in" />
-        <span>Profile</span>
-        {this.state.user.info.phone}
-        <UserSettingsButton user={this.state.user} />
+        <UserSettingsButton onUpdating={this.handleUserUpdate} user={this.state.user} />
         <UserView user={this.state.user} />
       </div>
     );

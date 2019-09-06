@@ -1,0 +1,72 @@
+.user-info
+  padding: 1rem
+  &__picture
+    width: 100%
+    height: auto
+    max-width: 500px
+    overflow: hidden
+    border-radius: 10px
+    img
+      width: 100%
+      height: auto
+  &__list
+    padding: 1rem
+    li
+      font-weight: bold
+      text-transform: capitalize
+      margin-bottom: 1rem
+      cursor: default
+  &__work-days
+    .day
+      border-radius: 5px
+      background-color: #ebebeb
+      display: inline-block
+      text-align: center
+      vertical-align: middle
+      padding: .5rem
+      margin: .5rem
+      cursor: default
+      user-select: none
+      &.active-day
+        background-color: #466f4b
+        color: white
+
+.user-settings-btn
+  padding: 1rem 2rem
+  border-radius: 10px
+  border: 1px solid #ebebeb
+  cursor: pointer
+  background-color: #ffffff
+  position: fixed
+  top: 70px
+  left: 1rem
+  &:hover
+    background: rgb(255,255,255)
+    background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(245,245,245,1) 67%, rgba(244,244,244,1) 100%)
+
+.user-settings-form
+  color: #333333
+  button, input[type="submit"]
+    outline: none
+    padding: 1rem 2rem
+    border-radius: 10px
+    border: 1px solid #ebebeb
+    cursor: pointer
+    background-color: #ffffff
+    &:hover
+      background: rgb(255,255,255)
+      background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(245,245,245,1) 67%, rgba(244,244,244,1) 100%)
+  input
+    outline: none
+    border: 1px solid #ebebeb
+    color: #333333
+    padding: .5rem 1rem
+    margin-left: .5rem
+    border-radius: 5px
+    &:focus
+      background-color: #e8f0fe
+
+.wd
+  label
+    width: 100px
+    display: inline-block
