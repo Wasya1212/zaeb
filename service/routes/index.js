@@ -13,7 +13,7 @@ const router = new Router();
 
 const getPage = page => {
   try {
-    return fs.createReadStream(path.resolve(__dirname, `public/${page}.html`));
+    return fs.createReadStream(path.resolve(__dirname, `../public/${page}.html`));
   } catch (e) {
     return 'Page not found!';
   }
