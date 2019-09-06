@@ -2,6 +2,7 @@
 
 const path = require('path');
 const fs = require('fs');
+const http = require('http');
 
 const Koa = require('koa');
 
@@ -23,6 +24,20 @@ const {
 const app = new Koa();
 
 const PORT = process.env.PORT || 5000;
+
+const httpServer = http.createServer(app.callback());
+
+const io = require('socket.io')(httpServer);
+
+io.on('connection', function(socket){
+  socket.on('chat message', data => {
+    console.log('message: ' + data.message.text);
+    socket.to(data.room).emit('message', {message: data.message});
+  });
+  socket.on('join to room', room => {
+    socket.join(room.toString());
+  });
+});
 
 app.use(async (ctx, next) => {
   const start = new Date();
@@ -53,6 +68,6 @@ app.use(router.routes(), router.allowedMethods());
 app.use(chatRouter.routes(), chatRouter.allowedMethods());
 app.use(userRouter.routes(), userRouter.allowedMethods());
 
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`Server work on port ${PORT}...`);
 });

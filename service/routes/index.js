@@ -33,6 +33,10 @@ router.get('/sign-up', async (ctx, next) => {
   await next();
 });
 
+router.get('/api/hostname', async ctx => {
+  ctx.body = ctx.host;
+});
+
 router.all('/*', withAuth, async (ctx, next) => {
   if (ctx.state.isAuthenticated) {
     try {

@@ -78,8 +78,6 @@ router.post('/api/chat/message', async ctx => {
     ctx.throw(e);
   }
 
-  console.log(conversation);
-
   if (!conversation) {
     const chat = new ChatModel({
       name: 'conversation',
@@ -106,7 +104,13 @@ router.post('/api/chat/message', async ctx => {
         $push: { ['info.chats']: chat._id }
       });
 
-      ctx.body = message;
+      ctx.body = Object.assign({}, {
+        author: await UserModel.findById(message.author),
+        chat: message.author,
+        text: message.text,
+        createdAt: message.createdAt,
+        _id: message._id
+      });
     } catch (e) {
       console.log(e);
       ctx.throw(403, "Cannot create message!");
@@ -122,7 +126,13 @@ router.post('/api/chat/message', async ctx => {
       await message.save();
       await conversation.updateOne({$push: {messages: message._id}});
 
-      ctx.body = message;
+      ctx.body = Object.assign({}, {
+        author: await UserModel.findById(message.author),
+        chat: message.author,
+        text: message.text,
+        createdAt: message.createdAt,
+        _id: message._id
+      });
     } catch (e) {
       console.log(e)
       ctx.throw(403, "Cannot create message!");

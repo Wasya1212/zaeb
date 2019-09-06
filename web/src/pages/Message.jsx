@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import axios from "axios";
+import socketIOClient from "socket.io-client";
 
 import { MessageList, AddUserToChatBtn } from "../components/Chat.jsx";
 
@@ -10,16 +11,37 @@ class Message extends Component {
   constructor(props) {
     super(props);
 
+    this.textInput = React.createRef();
+
     this.state = {
       messages: [],
       sendingMessage: '',
       chatId: null,
-      interlocutorId: null
+      interlocutorId: null,
+      socket: null
     };
   }
 
   componentDidMount() {
     const {chatId, direction} = this.props.match.params;
+
+    axios
+      .get('/api/hostname')
+      .then(resolve => {
+        const socket = socketIOClient(resolve.data == 'localhost:3000' ? 'localhost:5000' : resolve.data);
+        this.setState({
+          socket: socket
+        })
+      })
+      .then(() => {
+        this.state.socket.emit('join to room', chatId);
+        this.state.socket.on('message', message => {
+          this.state.messages.push(message);
+        });
+      })
+      .catch(err => {
+        console.error(err);
+      })
 
     switch (direction) {
       case 'conversation':
@@ -100,8 +122,13 @@ class Message extends Component {
         chatId: this.state.chatId,
         interlocutorId: this.state.interlocutorId
       })
-      .then(resolve => {
-        console.log(resolve);
+      .then(({data: message}) => {
+        try {
+          this.state.socket.emit('chat message', {room: this.props.match.params.chatId, message});
+        } catch (e) {} finally {
+          this.textInput.current.value = '';
+          this.setState({sendingMessage: ''})
+        }
       })
       .catch(err => {
         console.error(err);
@@ -139,7 +166,7 @@ class Message extends Component {
           }
         </ul>
         <form className="message-form" onSubmit={this.sendMessage}>
-          <input type="text" required="required" onChange={this.handleMessageChange} placeholder="Enter message..." />
+          <input ref={this.textInput} type="text" required="required" onChange={this.handleMessageChange} placeholder="Enter message..." />
           <button type="submit">send</button>
         </form>
       </div>
