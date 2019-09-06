@@ -158,7 +158,7 @@ class Message extends Component {
               <li key={message._id}>
                 <div className="user-view">
                   <div className="user-view__picture">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc5zNZV5Uc6ZwS4JAxBVS0DiqUtIAR_Q5u6-G42vMfNk3mFFLj" />
+                    <img src={message.author.info.photo || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc5zNZV5Uc6ZwS4JAxBVS0DiqUtIAR_Q5u6-G42vMfNk3mFFLj"} />
                   </div>
                   <div className="user-view__info">
                     <span className="user-view__name">{message.author.info.name}</span>
