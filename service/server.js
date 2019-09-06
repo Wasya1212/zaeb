@@ -31,11 +31,12 @@ const io = require('socket.io')(httpServer);
 
 io.on('connection', function(socket){
   socket.on('chat message', data => {
-    console.log('message: ' + data.message.text);
-    socket.to(data.room).emit('message', {message: data.message});
+    console.log('message: ' + data.room);
+    socket.to(data.room.toString()).emit('message', {message: data.message});
   });
   socket.on('join to room', room => {
-    socket.join(room.toString());
+    console.log('room', room);
+    socket.join(room.chatId.toString());
   });
 });
 

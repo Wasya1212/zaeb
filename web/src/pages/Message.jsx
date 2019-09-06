@@ -34,9 +34,11 @@ class Message extends Component {
         })
       })
       .then(() => {
-        this.state.socket.emit('join to room', chatId);
-        this.state.socket.on('message', message => {
-          this.state.messages.push(message);
+        this.state.socket.emit('join to room', {chatId});
+        this.state.socket.on('message', ({message}) => {
+          this.setState({
+            messages: this.state.messages.concat(message)
+          });
         });
       })
       .catch(err => {
@@ -127,7 +129,10 @@ class Message extends Component {
           this.state.socket.emit('chat message', {room: this.props.match.params.chatId, message});
         } catch (e) {} finally {
           this.textInput.current.value = '';
-          this.setState({sendingMessage: ''})
+          this.setState({
+            messages: this.state.messages.concat(message),
+            sendingMessage: ''
+          });
         }
       })
       .catch(err => {
