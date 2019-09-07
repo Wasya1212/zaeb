@@ -127,6 +127,18 @@ const UserProfile = props => (
   </div>
 );
 
+const wt = user => {
+  let s;
+
+  try {
+    s = (user.info.status.work_times.start || '') + ' - ' + (user.info.status.work_times.end || '')
+  } catch(e) {
+    s = '';
+  } finally {
+    return s;
+  }
+}
+
 const UserView = ({user}) => (
   <div className="user-info">
     <div className="user-info__picture">
@@ -137,7 +149,7 @@ const UserView = ({user}) => (
       <li className="user-info__email">email: {user.email || ''}</li>
       <li className="user-info__post">post: {user.info.post || ''}</li>
       <li className="user-info__salary">salary: {user.info.salary || ''} UAH</li>
-      <li className="user-info__work-time">workin time:{(user.info.status.work_times.start || '') + ' - ' + (user.info.status.work_times.end || '')}</li>
+      <li className="user-info__work-time">workin time:{wt(user)}</li>
       <li className="user-info__work-days">
         <div className={user.info.status.work_days.indexOf(1) == -1 ? "day" : "day active-day"}>Mn</div>
         <div className={user.info.status.work_days.indexOf(2) == -1 ? "day" : "day active-day"}>Ts</div>
